@@ -4,26 +4,7 @@ Created on Mon Apr 27 10:33:33 2020
 
 @author: louis
 
-This is the primary script for this data extractor tool.  In each loop in the code below,
-the dataDict (from dataDefinitions.py) is looped through, and the script downloads
-the following items to separate CSV files for each table:
-    
-    1) the table records
-    2) the work notes and comments (from sys_journal_field)
-    3) the assignment history (from sys_audit - you may need to increase your SN REST timeout setting for this)
-    4) mappings of user names and their sys_ids, and group names and their sys_ids
-    5) for the sc_req_item table, all variables and their values will be downloaded
-        NOTE: you must have the exportItemVariables processor for this, which is included in this repository
-    6) for some tables, approval history from sysapproval_approver will be downloaded
-    7) all attachments
-        NOTE:  you must have the exportAttachmentsToZip processor for this, which is included in this repository
-
-
-Here is how it works:
-    
-    a) Modify exportConfig.cfg to point to your instance with an admin user/pass
-    b) Modify the dataDefinitions.py file's dataDict to have the tables/fields you want to export
-    c) Run this script
+See the README file in the repository for information on how to use this.
 
 """
 
