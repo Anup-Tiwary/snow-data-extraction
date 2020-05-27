@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><unload unload_date="2020-05-06 16:40:51">
+<sys_remote_update_set action="INSERT_OR_UPDATE">
+<application display_value="Global">global</application>
+<application_name>Global</application_name>
+<application_scope>global</application_scope>
+<application_version/>
+<collisions/>
+<commit_date/>
+<deleted/>
+<description>These are items created to assist with the Rego data exports</description>
+<inserted/>
+<name>Rego - Data Export Items</name>
+<origin_sys_id/>
+<parent display_value=""/>
+<release_date/>
+<remote_base_update_set display_value=""/>
+<remote_parent_id/>
+<remote_sys_id>43053d38dbe09810d77916684b96194d</remote_sys_id>
+<state>loaded</state>
+<summary/>
+<sys_class_name>sys_remote_update_set</sys_class_name>
+<sys_created_by>Lou.Savalli.admin</sys_created_by>
+<sys_created_on>2020-05-06 16:40:51</sys_created_on>
+<sys_id>653f3f6adb609050d77916684b9619e1</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>Lou.Savalli.admin</sys_updated_by>
+<sys_updated_on>2020-05-06 16:40:51</sys_updated_on>
+<update_set display_value=""/>
+<update_source display_value=""/>
+<updated/>
+</sys_remote_update_set>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_processor_8d55b4a2db9010109e6f61ca0b961904</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_processor"&gt;&lt;sys_processor action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;class_name/&gt;&lt;description&gt;This processor takes in table and record sys_id values and returns all of the attachments to that record as a zip file.&lt;/description&gt;&lt;interactive&gt;false&lt;/interactive&gt;&lt;name&gt;exportAttachmentsToZip&lt;/name&gt;&lt;parameters/&gt;&lt;params_endpoint/&gt;&lt;path&gt;exportAttachmentsToZip&lt;/path&gt;&lt;path_endpoint/&gt;&lt;require_csrf&gt;false&lt;/require_csrf&gt;&lt;roles/&gt;&lt;script&gt;&lt;![CDATA[var sysid = g_request.getParameter('sysparm_sys_id');
+var table = g_request.getParameter('sysparm_table');
+
+var theRecord = new GlideRecord(table);
+theRecord.addQuery('sys_id', sysid);
+theRecord.query();
+theRecord.next();
+
+var zipName = sysid + '.zip';
+
+var StringUtil = GlideStringUtil;
+
+var gr = new GlideRecord('sys_attachment');
+gr.addQuery('table_sys_id', theRecord.sys_id);
+gr.addQuery('table_name', theRecord.getTableName());
+gr.query();
+
+var namesArray = [];
+
+if (gr.hasNext()){
+	g_response.setHeader('Pragma', 'public');
+	g_response.addHeader('Cache-Control', 'max-age=0');
+	g_response.setContentType('application/octet-stream');
+	g_response.addHeader('Content-Disposition', 'attachment;filename=' + zipName);
+	var out = new Packages.java.util.zip.ZipOutputStream(g_response.getOutputStream());
+	var count=0;
+	while (gr.next()){
+		var sa = new GlideSysAttachment();
+		var binData = sa.getBytes(gr);
+		var file = gr.file_name;
+		
+		/* if there are duplicate file names, append a digit onto the end */
+		
+		var numOfFiles = namesArray.filter(function(x){ /* gs.info('x: ' + x + ', name: ' + gr.file_name); */ return x === gr.file_name.toString(); }).length;
+		//gs.info("file name: " + file + ", numOfFiles: " + numOfFiles);
+		namesArray.push(file.toString());
+		
+		if(numOfFiles &gt; 0){
+			file = file.replace('.', (numOfFiles + 1) + '.');
+			namesArray.push(file.toString());
+		}
+		
+		gs.info("names array after: " + namesArray.toString());
+		addBytesToZip(out, zipName, file, binData);
+		count ++;
+	}
+	// Complete the ZIP file
+	out.close();
+}
+
+function addBytesToZip (out, dir, file, stream){
+	// Add ZIP entry to output stream.
+	out.putNextEntry(new Packages.java.util.zip.ZipEntry(file));
+	out.write(stream, 0, stream.length);
+	out.closeEntry();
+}
+
+]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_processor&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2020-04-23 15:43:31&lt;/sys_created_on&gt;&lt;sys_customer_update&gt;false&lt;/sys_customer_update&gt;&lt;sys_id&gt;8d55b4a2db9010109e6f61ca0b961904&lt;/sys_id&gt;&lt;sys_mod_count&gt;36&lt;/sys_mod_count&gt;&lt;sys_name&gt;exportAttachmentsToZip&lt;/sys_name&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_replace_on_upgrade&gt;false&lt;/sys_replace_on_upgrade&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_processor_8d55b4a2db9010109e6f61ca0b961904&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;Lou.Savalli.admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2020-05-06 16:40:28&lt;/sys_updated_on&gt;&lt;type&gt;script&lt;/type&gt;&lt;/sys_processor&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1741015965</payload_hash>
+<remote_update_set display_value="Rego - Data Export Items">653f3f6adb609050d77916684b9619e1</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>Lou.Savalli.admin</sys_created_by>
+<sys_created_on>2020-05-06 16:40:51</sys_created_on>
+<sys_id>613f3f6adb609050d77916684b9619e2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>171eadc25da0000001</sys_recorded_at>
+<sys_updated_by>Lou.Savalli.admin</sys_updated_by>
+<sys_updated_on>2020-05-06 16:40:51</sys_updated_on>
+<table/>
+<target_name>exportAttachmentsToZip</target_name>
+<type>Processor</type>
+<update_domain>global</update_domain>
+<update_guid>482f3b6ada609050de032665e613ca10</update_guid>
+<update_guid_history>482f3b6ada609050de032665e613ca10:1741015965,a61f3f6a2e609050b8c3b339448c4a0b:1142090116,49ee776a8c609050a6fcce8ae12b989f:1741015965,dceeb36ab760905018880aa915957ad1:1142090116,4c2575f8f2e098107e72ab97e5b65cbc:1741015965,131539f098e0981099d6b1c86a324efb:1142090116,dc91303874ec581020608fa96c4d5473:1741015965,0781bcf097ec5810bb1b15bfef96fbc4:1142090116,e1f27e7e431c901085066f5d620d53d3:-2105191050</update_guid_history>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_processor_58174344dba8d410d77916684b9619c3</name>
+<payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_processor"&gt;&lt;sys_processor action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;class_name/&gt;&lt;description&gt;This takes in a comma-separated list of sys_id values of sc_req_item tickets, and returns all of their variables in a comma-separated list (each sc_req_item is on a new line).&lt;/description&gt;&lt;interactive&gt;false&lt;/interactive&gt;&lt;name&gt;exportItemVariables&lt;/name&gt;&lt;parameters/&gt;&lt;params_endpoint/&gt;&lt;path&gt;exportItemVariables&lt;/path&gt;&lt;path_endpoint/&gt;&lt;require_csrf&gt;false&lt;/require_csrf&gt;&lt;roles/&gt;&lt;script&gt;&lt;![CDATA[(function process(g_request, g_response, g_processor) {
+
+	var sysIdList = g_request.getParameter('sysparm_sysIdList'); /* sys_id of sc_req_item */
+	sysIdArray = sysIdList.split(",");
+	var output = "";
+	var item;
+
+	for(var i = 0; i &lt; sysIdArray.length; i++){
+		item = new GlideRecord("sc_req_item");
+		item.get(sysIdArray[i]);
+		output += item.sys_id.toString() + ",";
+		var variables = item.variables.getElements(); 
+		for (var j=0; j&lt;variables.length; j++) { 
+			var question = variables[j].getQuestion(); 
+			output += "\"" + question.getLabel() + ":" + question.getDisplayValue().replace("\"", "'") + "\",";
+		}
+		output += "\n";	
+	}
+
+	g_processor.writeOutput(output);
+
+})(g_request, g_response, g_processor);]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_processor&lt;/sys_class_name&gt;&lt;sys_created_by&gt;Lou.Savalli.admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2020-04-28 18:11:43&lt;/sys_created_on&gt;&lt;sys_customer_update&gt;false&lt;/sys_customer_update&gt;&lt;sys_id&gt;58174344dba8d410d77916684b9619c3&lt;/sys_id&gt;&lt;sys_mod_count&gt;91&lt;/sys_mod_count&gt;&lt;sys_name&gt;exportItemVariables&lt;/sys_name&gt;&lt;sys_package display_value="Global" source="global"&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_replace_on_upgrade&gt;false&lt;/sys_replace_on_upgrade&gt;&lt;sys_scope display_value="Global"&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_processor_58174344dba8d410d77916684b9619c3&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;Lou.Savalli.admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2020-05-06 16:40:25&lt;/sys_updated_on&gt;&lt;type&gt;script&lt;/type&gt;&lt;/sys_processor&gt;&lt;/record_update&gt;</payload>
+<payload_hash>152129805</payload_hash>
+<remote_update_set display_value="Rego - Data Export Items">653f3f6adb609050d77916684b9619e1</remote_update_set>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>Lou.Savalli.admin</sys_created_by>
+<sys_created_on>2020-05-06 16:40:51</sys_created_on>
+<sys_id>a93f3f6adb609050d77916684b9619e1</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>171eadc1c2b0000001</sys_recorded_at>
+<sys_updated_by>Lou.Savalli.admin</sys_updated_by>
+<sys_updated_on>2020-05-06 16:40:51</sys_updated_on>
+<table/>
+<target_name>exportItemVariables</target_name>
+<type>Processor</type>
+<update_domain>global</update_domain>
+<update_guid>9f1f3f6a69609050a4335b62ddf998dd</update_guid>
+<update_guid_history>9f1f3f6a69609050a4335b62ddf998dd:152129805,0e1f3b6ab760905021ab977f46f12f1d:1280862708,7a0f376ac8609050608f1942c3da82b1:152129805,5fde3fa6a26090507a6e417bdd4158c0:1011865470,eadeb36ad4609050166f1e4635d1e4f5:1702455717,fc066e7c3da01c10b6c48e2c52afcab4:1011865470,0555ee3cb4a01c10c7f423666a8825c0:-131199074,7805ea3c54a01c104a672c4dcda13d65:-1460741390,78b4a63c1aa01c106aa62caa001b9dbd:-1238389357,f025f1f8fee09810fd0dfecbbd795578:-1271559819,3615f1f8b5e09810185c9c203f14c074:1964283374,19d830b0a620981020c99fb18c96a4f0:-1271559819,5a5fd0f064ac5810c0408d4fcd0e749c:-1698135517,08ed1070b7ac581092a64315f1924783:-348227389,9a8d983035ac58104d50f36e6a2aa4de:491494485,387ddc3002ac58105b6626ad02ccd7b3:-1948407496,855ddc301cac58102d13cc9ff25567ae:61305947,9b2dd4fc276c581010787fdfa4640c67:-1366677957,93fcdc30e1ac5810f1dbcdf0ca97eeab:-875210465,2bdcd4fce86c5810fe374479b34c56e2:1981812899,c1ccd0fc696c58101aa6a3a6e82c52e8:520463613,e16cd0305eac5810388636a9b9bba6fb:-1622323619,35fb10fcfc6c581072d6e31d15a430cd:-2029496138,7e2b5c7cbe6c58108b86ee103c7d295d:1292263613,bcea5cbcf16c58101e8d3ee03310bed0:2022689188,91aa94b8f06c5810d8825a10f8461e1c:-1500090172,6fb9147ce76c581031636c3badbee568:2088552362,b8a9d87c7f6c58106d52c94975e0e025:1712910644,27895c7cd96c58105a97a26b27cafd54:-396877388,12695c78d46c5810aadd34a30ec1809e:2088552362,87f8983cff6c5810530aae755dc8f801:1252908544,2ba85878ef6c581001d02e5b0b980f19:-826248051,20881c3c3e6c58101d4b989fe980ec79:997786991,0828d8384d6c5810f168b4433259bdd1:2128162125,93f598bc092c5810831e4f0ba2f37b1b:-615994384,22859438086c58103e66f8c22034e1a2:449708835,a775d438716c5810ece8a46b9a6a0209:1486140634,566410f0bd6c58100052bbcc1ef53d5c:1378325841,2b08bc20d4605810efb036ab48bcd635:-1874407708,6d5774a86f205810c31d70e244dcacfb:-797039409,1f17f4ac832058109a0715495b946a3a:1270979132,fb367caca520581007cc599b934d7f6b:-416761095,7e167cacaa205810bee3b1b2311aa153:-1885425662,e615f4ac952058106b1220646c854932:1252664627,e5b4b0ac1b20581026117752c66a47de:1026009590,2a64b0ac19205810511c4102fdf0b2c4:-742996634,def3b8a8c320581006c4553b9d27343b:-931362614,cfc334a4d12058102aeef297fccc9024:-1249577156,9063702402205810ccc5ffd553f50e02:-1936366052,b0e2f8a0da20581012d05a66707d7926:915001937,ac8278a4f72058100e408ff5d912b99d:-1721924085,382eeca0412058100ae065bd80067661:-1063981488,fcdc282042205810fde2bb3f67a4ff85:1146967763,389a2820efec1810c7140ef16a317b08:1393502963,51a510a4dbac18104679d03b4128e1f0:79873584,422fcc2caa6c1810df9f40a7bf702dca:-1944914245,ec9a8824066c18109dc8ec9557cdfbfd:2032343089,f16a44a0896c1810f9135205da7a11ad:-256553935,f7a8cc20156c18107c82cb4a70ab52d5:-1819588092,6b488c202e6c181065bf45d499085c8d:2097379376,1dd78c20506c1810ba4462056b5b14a6:-1852707198,39b740a0d66c181000cb90da0a840c87:1586883246,84178c20726c18102dad0f8fc1201538:-523158761,20e600286c2c181009158c677fd4f6d0:1181294436,74c244283a2c18106aff51d4fd41a525:-2019793299,93a184e4002c1810f7592ae0420edc34:1277791056,84c0c4e0672c18100f1253f1ac961766:-263765298,194084a4d62c1810e41644792a7e2d0e:544228141,180ffbd0f62c18108cb845ecd79697e4:-1356048078,1c7dffd0aa2c1810988239a906a1cfc2:1580296944,fd5df7d09e2c181019dc6c6067280f8f:-2004538566,1e3dff50382c181077543657aa8f966b:-1575059827,cc2d3f10422c1810bd5b4bf91d4913d6:1556854372,cffcf3dc67e81810248dc9b07c5f4d55:-1575059827,519cf790162c181039b25469d47d2b6f:-1784771480,b65c3750752c181037a28b5de671c24f:954030457,444cb39c6de81810d0d7eab34e87a343:866719415,f40c7750ee2c181018e75bc0d2015877:-1659867072,5dbbf3dc91e81810adaa71116584c74f:-36096828,d28b7750db2c1810f70fd05dba91fa74:1564838937,fdda7750072c18104e0eadb823b74b65:490016109,6f1abb10652c181060d0b88712972712:-2144160471,4269bfdcd4e8181095b80c931ad7e551:-1112743763,fba83798bde818103dbc34bcbe382284:-725171719,73f943c4a7a8d41071e0bff0544e6c6e:841849149,b3c9c3447ea8d410509d880af2b1016e:-1464644362,0e990f84a2a8d4107925991efbb1fbcf:-2064603916,e379c7443aa8d410e65b4b5d4c1a8bbf:947598134,5d190744e6a8d410bc725217d6a7abf8:-956414025,69a7c34409a8d41005f14e6cc69d9666:-2145561229,2287c7444da8d4108a63e2af5dffe1b8:-471265836,72470744f8a8d4106a691e813fd2eaf3:-87075013</update_guid_history>
+<update_set display_value=""/>
+<view/>
+</sys_update_xml>
+</unload>
