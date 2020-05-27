@@ -18,6 +18,8 @@ through each, and downloads the following to CSV files:
         
 # Getting started
 
+IMPORTANT:  in order to utilize the attachment and Request Item variable exports, you must import two processors to your ServiceNow instance.  These can be found in the update set in this repository named "Update Set for Processors.xml".
+
 To use this for yourself, do the following:
 
     a) Modify exportConfig.cfg to point to your instance with an admin user/pass
