@@ -22,4 +22,4 @@ To use this for yourself, do the following:
 
     a) Modify exportConfig.cfg to point to your instance with an admin user/pass
     b) Modify the dataDefinitions.py file's dataDict to have the tables/fields you want to export
-    c) Run this script
+    c) Run dataExport.py
